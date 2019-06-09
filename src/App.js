@@ -41,14 +41,7 @@ class App extends Component {
        recognition.start()
        console.log("start");
     }
-    else {
-      recognition.stop()
-      recognition.onend = () => {
-        console.log("Stopped listening per click")
-        this.props.addTodo(this.state.val);
-        speechSynthesis.speak(speaker);
-      }
-    }
+    
     let finalTranscript = ''
     recognition.onresult = event => {
       let interimTranscript = ''
@@ -61,8 +54,8 @@ class App extends Component {
       // document.getElementById('interim').innerHTML = interimTranscript
       // document.getElementById('final').innerHTML = finalTranscript
       // console.log("YEs",finalTranscript); 
-      this.setState({val:finalTranscript, listening: !this.state.listening});
-      // this.handleClick();    
+      this.setState({val:finalTranscript});
+      this.handleClick();    
       // console.log(speaker.text) ;
       
       // speechSynthesis.speak(speaker);
@@ -74,6 +67,7 @@ class App extends Component {
   }
   handleClick = () => {
     this.props.addTodo(this.name.value);
+    speechSynthesis.speak(speaker);
     console.log(this.name.value);
     this.name.value='';
   }
