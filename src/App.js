@@ -7,8 +7,70 @@ import './App.css';
 import ToDoList from './Components/todo';
 // import addTodo from './Actions/index';
 import { addTodo, setFilter,toggleTodo } from './Actions/index';
+var SpeechRecognition;
+SpeechRecognition= SpeechRecognition || window.webkitSpeechRecognition
+const recognition = new SpeechRecognition()
+const speaker = new SpeechSynthesisUtterance();
+recognition.continous = true;
+recognition.interimResults = true
+recognition.lang = 'en-US'
 
+speaker.lang = 'en-US';
+speaker.text = 'Your task was added';
 class App extends Component {
+  constructor() {
+    super()
+    this.state = {
+      listening: false,
+      val:'',
+      inputThing:""
+    }
+    this.toggleListen = this.toggleListen.bind(this)
+    this.handleListen = this.handleListen.bind(this)
+  }
+  toggleListen() {
+    console.log("Toggle listen")
+    this.setState({
+      listening: !this.state.listening
+    }, this.handleListen)
+  }
+  
+  handleListen() {
+    console.log("Handle listen")
+    if (this.state.listening){
+       recognition.start()
+       console.log("start");
+    }
+    else {
+      recognition.stop()
+      recognition.onend = () => {
+        console.log("Stopped listening per click")
+        this.props.addTodo(finalTranscript);
+        speechSynthesis.speak(speaker);
+      }
+    }
+    let finalTranscript = ''
+    recognition.onresult = event => {
+      let interimTranscript = ''
+
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const transcript = event.results[i][0].transcript;
+        if (event.results[i].isFinal) finalTranscript += transcript + ' ';
+        else interimTranscript += transcript;
+      }
+      // document.getElementById('interim').innerHTML = interimTranscript
+      document.getElementById('final').innerHTML = finalTranscript
+      console.log("YEs",finalTranscript); 
+      this.setState({val:finalTranscript})     
+      // console.log(speaker.text) ;
+      
+      // speechSynthesis.speak(speaker);
+           
+    }
+    
+      
+      
+  }
   handleClick = () => {
     this.props.addTodo(this.name.value);
     console.log(this.name.value);
@@ -23,14 +85,17 @@ class App extends Component {
       <div className="App">
         <div className="container">
           <br></br>
-          <h1>ToDo Application</h1>
+          <br></br>
+          <h1>ToDo App</h1>
           <br></br>
           <div className="row form-group">
             < div className="col-md-3">              
             </div>
             <div className="col-md-6">            
-              <input type="text" ref={input => this.name = input}  />            
+              <input type="text" ref={input => this.name = input} value={this.state.val}/>                     
               <button className="btn btn-primary ml-3" onClick ={this.handleClick.bind(this)}>Add item</button>
+              <button style={button} onClick={this.toggleListen} />
+              <div id='final' style={final}></div>
             </div>   
           </div>
           
@@ -70,3 +135,35 @@ function matchDispatchToProps(dispatch){
 }
 
 export default connect(mapStateToProps,matchDispatchToProps)(App);
+const styles = {
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    textAlign: 'center',
+    
+  },
+  button: {
+    width: '40px',
+    height: '40px',
+    background: 'lightblue',
+    borderRadius: '50%',
+    margin: '1em 1em 1em 1em'
+  },
+  interim: {
+    color: 'gray',
+    border: '#ccc 1px solid',
+    padding: '1em',
+    margin: '1em',
+    width: '300px'
+  },
+  final: {
+    color: 'black',
+    border: '#ccc 1px solid',
+    padding: '1em',
+    margin: '1em',
+    width: '300px'
+  }
+}
+
+const { container, button, interim, final } = styles
