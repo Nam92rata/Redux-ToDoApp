@@ -45,7 +45,7 @@ class App extends Component {
       recognition.stop()
       recognition.onend = () => {
         console.log("Stopped listening per click")
-        this.props.addTodo(finalTranscript);
+        this.props.addTodo(this.state.val);
         speechSynthesis.speak(speaker);
       }
     }
@@ -59,9 +59,10 @@ class App extends Component {
         else interimTranscript += transcript;
       }
       // document.getElementById('interim').innerHTML = interimTranscript
-      document.getElementById('final').innerHTML = finalTranscript
-      console.log("YEs",finalTranscript); 
-      this.setState({val:finalTranscript})     
+      // document.getElementById('final').innerHTML = finalTranscript
+      // console.log("YEs",finalTranscript); 
+      this.setState({val:finalTranscript, listening: !this.state.listening});
+      // this.handleClick();    
       // console.log(speaker.text) ;
       
       // speechSynthesis.speak(speaker);
@@ -86,7 +87,7 @@ class App extends Component {
         <div className="container">
           <br></br>
           <br></br>
-          <h1>ToDo App</h1>
+          <h1>ToDo App 1</h1>
           <br></br>
           <div className="row form-group">
             < div className="col-md-3">              
@@ -95,7 +96,7 @@ class App extends Component {
               <input type="text" ref={input => this.name = input} value={this.state.val}/>                     
               <button className="btn btn-primary ml-3" onClick ={this.handleClick.bind(this)}>Add item</button>
               <button style={button} onClick={this.toggleListen} />
-              <div id='final' style={final}></div>
+              {/* <div id='final' style={final}></div> */}
             </div>   
           </div>
           
