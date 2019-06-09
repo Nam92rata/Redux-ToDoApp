@@ -55,7 +55,7 @@ class App extends Component {
       // document.getElementById('final').innerHTML = finalTranscript
       // console.log("YEs",finalTranscript); 
       this.setState({val:finalTranscript});
-      // this.handleClick();    
+      this.handleClick();    
       // console.log(speaker.text) ;
       
       // speechSynthesis.speak(speaker);
@@ -65,13 +65,21 @@ class App extends Component {
       
       
   }
+
+  onChangeHandler(e){
+    e.preventDefault();
+    this.setState({val: e.target.value})
+  }
   handleClick = () => {
     console.log("Fired")
-    this.props.addTodo(this.name.value);
-    speechSynthesis.speak(speaker);
-    console.log(this.name.value);
-    this.setState({val:''})
-    this.name.value='';
+    if(this.state.val!==""){
+      this.props.addTodo(this.name.value);
+      speechSynthesis.speak(speaker);
+      console.log(this.name.value);
+      this.setState({val:''})
+      this.name.value='';
+    }
+    
   }
   onClick = (e) => {
     this.props.setFilter(e.target.value);
@@ -89,7 +97,7 @@ class App extends Component {
             < div className="col-md-3">              
             </div>
             <div className="col-md-6">            
-              <input type="text" ref={input => this.name = input} value={this.state.val}/>                     
+              <input type="text" ref={input => this.name = input} value={this.state.val} onChange={e=>{this.onChangeHandler(e)}}/>                     
               <button className="btn btn-primary ml-3" onClick ={this.handleClick.bind(this)}>Add item</button>
               <button style={button} onClick={this.toggleListen} />
               {/* <div id='final' style={final}></div> */}
