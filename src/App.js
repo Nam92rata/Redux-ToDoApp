@@ -55,7 +55,7 @@ class App extends Component {
       // document.getElementById('final').innerHTML = finalTranscript
       // console.log("YEs",finalTranscript); 
       this.setState({val:finalTranscript});
-      this.handleClick();    
+      // this.handleClick();    
       // console.log(speaker.text) ;
       
       // speechSynthesis.speak(speaker);
@@ -66,9 +66,11 @@ class App extends Component {
       
   }
   handleClick = () => {
+    console.log("Fired")
     this.props.addTodo(this.name.value);
     speechSynthesis.speak(speaker);
     console.log(this.name.value);
+    this.setState({val:''})
     this.name.value='';
   }
   onClick = (e) => {
